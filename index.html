@@ -99,36 +99,64 @@
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/zoom/lg-zoom.min.js"></script>
   <script>
-    lightGallery(document.getElementById('lightgallery'), {
-      selector: 'a',
-      plugins: [lgThumbnail, lgZoom],
-      speed: 400,
-      download: false,
-      actualSize: false
-    });
+let lgInstance;
 
-    function filterGallery(category, event) {
-      const buttons = document.querySelectorAll('.filter-buttons button');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+function initLightGallery(category) {
+  const gallery = document.getElementById('lightgallery');
 
-      const items = document.querySelectorAll('.gallery-item');
-      items.forEach(item => {
-        if (item.classList.contains(category)) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
+  // Destroy existing instance if it exists
+  if (lgInstance) {
+    lgInstance.destroy();
+  }
+
+  // Only select anchors within visible items of the current category
+  const selector = `.gallery-item.${category} a`;
+
+  lgInstance = lightGallery(gallery, {
+    selector: selector,
+    plugins: [lgThumbnail, lgZoom],
+    speed: 400,
+    download: false,
+    actualSize: false,
+    hideBarsDelay: 3000,
+    mobileSettings: {
+      controls: true,
+      showCloseIcon: true,
+      showMaximizeIcon: true,
+      showZoomInOutIcons: false,
+      rotate: false
     }
+  });
+}
 
-    document.addEventListener("DOMContentLoaded", () => {
-      filterGallery('photo-shoots', { target: document.querySelector('.filter-buttons button') });
+function filterGallery(category, event) {
+  const buttons = document.querySelectorAll('.filter-buttons button');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event?.target.classList.add('active');
+
+  const items = document.querySelectorAll('.gallery-item');
+  items.forEach(item => {
+    item.style.display = item.classList.contains(category) ? 'block' : 'none';
+  });
+
+  // Wait for DOM update before reinitializing gallery
+  setTimeout(() => initLightGallery(category), 50);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const defaultCategory = 'photo-shoots';
+  const defaultButton = document.querySelector(`.filter-buttons button[onclick*="${defaultCategory}"]`);
+
+  document.querySelectorAll('.filter-buttons button').forEach(button => {
+    button.addEventListener('click', e => {
+      const category = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+      filterGallery(category, e);
     });
-  </script>
+  });
+
+  filterGallery(defaultCategory, { target: defaultButton });
+});
+</script>
 </body>
 </html>
