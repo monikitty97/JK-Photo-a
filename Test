@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/css/lightgallery-bundle.min.css">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .filter-buttons {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .filter-buttons button {
+      background: none;
+      border: 1px solid #b2975b;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .filter-buttons button.active {
+      background-color: #b2975b;
+      color: black;
+    }
+
+    /* Masonry style layout */
+    .gallery-grid {
+      column-count: 2;
+      column-gap: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .gallery-grid {
+        column-count: 2;
+      }
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 15px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      border-radius: 5px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="filter-buttons">
+    <button class="active" onclick="filterGallery('photo-shoots', event)">Photo Shoots</button>
+    <button onclick="filterGallery('calvin-klein', event)">Calvin Klein</button>
+    <button onclick="filterGallery('magazines', event)">Magazine</button>
+    <button onclick="filterGallery('events', event)">Events</button>
+  </div>
+
+  <div id="lightgallery" class="gallery-grid">
+
+    <!-- PHOTO SHOOTS -->
+    <div class="gallery-item photo-shoots">
+      <a href="https://i.postimg.cc/43WFJbGm/IMG-9576.jpg" data-sub-html="Photo Shoots 1">
+        <img src="https://i.postimg.cc/43WFJbGm/IMG-9576.jpg" alt="Photo 1" loading="lazy" />
+      </a>
+    </div>
+
+    <div class="gallery-item photo-shoots">
+      <a href="https://i.postimg.cc/6QbYsWVZ/CFDFBA52-5665-4-A40-B328-DD98-ADFBB3-D2.jpg" data-sub-html="Photo Shoots 2">
+        <img src="https://i.postimg.cc/6QbYsWVZ/CFDFBA52-5665-4-A40-B328-DD98-ADFBB3-D2.jpg" alt="Photo 2" loading="lazy" />
+      </a>
+    </div>
+
+    <div class="gallery-item photo-shoots">
+      <a href="https://i.postimg.cc/B68N4rNV/E23-F2-D0-E-BFA7-4808-9747-18842-B869-A87.jpg" data-sub-html="Photo Shoots 3">
+        <img src="https://i.postimg.cc/B68N4rNV/E23-F2-D0-E-BFA7-4808-9747-18842-B869-A87.jpg" alt="Photo 3" loading="lazy" />
+      </a>
+    </div>
+
+    <!-- CALVIN KLEIN -->
+    <div class="gallery-item calvin-klein" style="display:none;">
+      <a href="https://i.postimg.cc/DZWCWYkJ/IMG-6124.jpg" data-sub-html="Calvin Klein Spring 2024">
+        <img src="https://i.postimg.cc/DZWCWYkJ/IMG-6124.jpg" alt="Calvin Klein" loading="lazy" />
+      </a>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/lightgallery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/thumbnail/lg-thumbnail.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.1/plugins/zoom/lg-zoom.min.js"></script>
+  <script>
+    lightGallery(document.getElementById('lightgallery'), {
+      selector: 'a',
+      plugins: [lgThumbnail, lgZoom],
+      speed: 400,
+      download: false,
+      actualSize: false
+    });
+
+    function filterGallery(category, event) {
+      const buttons = document.querySelectorAll('.filter-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const items = document.querySelectorAll('.gallery-item');
+      items.forEach(item => {
+        if (item.classList.contains(category)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      filterGallery('photo-shoots', { target: document.querySelector('.filter-buttons button') });
+    });
+  </script>
+</body>
+</html>
